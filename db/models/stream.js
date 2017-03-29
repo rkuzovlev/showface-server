@@ -1,6 +1,7 @@
 const Waterline = require('waterline');
 const utils = require('../../utils');
 const _ = require('lodash');
+const wsmsg = require('../../ws-messenger');
 
 module.exports = Waterline.Collection.extend({
 	identity: 'stream',
@@ -38,6 +39,7 @@ module.exports = Waterline.Collection.extend({
 			if (!streams[0]){
 				throw new Error(`stream with id ${id} is not found`);
 			}
+			wsmsg.streamUpdate(id, streams[0]);
 			return streams[0];
 		});
 	},

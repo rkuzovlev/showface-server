@@ -2,6 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var app = require('./app');
 var db = require('./db');
+const wsmsg = require('./ws-messenger');
 const debug = require('debug')('server:worker');
 // var healthChecker = require('sc-framework-health-check');
 
@@ -11,6 +12,8 @@ module.exports.run = function (worker) {
 
 	var httpServer = worker.httpServer;
 	var scServer = worker.scServer;
+
+    wsmsg.setScServer(scServer);
 
     db.connect.catch((err) => {
         console.error(err);
@@ -24,13 +27,8 @@ module.exports.run = function (worker) {
 
 	var count = 0;
 
-	/*
-		In here we handle our incoming realtime connections and listen for events.
-	*/
 	scServer.on('connection', function (socket) {
-
-		// Some sample logic to show how to handle client events,
-		// replace this with your own logic
+        debug("ws client is connected");
 
 		socket.on('sampleClientEvent', function (data) {
 			count++;
@@ -38,14 +36,8 @@ module.exports.run = function (worker) {
 			scServer.exchange.publish('sample', count);
 		});
 
-		var interval = setInterval(function () {
-			socket.emit('rand', {
-				rand: Math.floor(Math.random() * 5)
-			});
-		}, 1000);
-
 		socket.on('disconnect', function () {
-			clearInterval(interval);
+            debug("ws client is disconnected");
 		});
 	});
 };

@@ -3,7 +3,7 @@ const express = require('express'),
 	  utils = require('../utils'),
 	  _ = require('lodash'),
 	  passport = require('../passport');
-
+	  
 const router = express.Router();
 const User = wl.collections.user;
 const StreamModel = wl.collections.stream;
