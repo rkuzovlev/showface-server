@@ -3,10 +3,11 @@ const express = require('express'),
 	  utils = require('../utils'),
 	  _ = require('lodash'),
 	  passport = require('../passport');
-	  
+
 const router = express.Router();
 const User = wl.collections.user;
 const StreamModel = wl.collections.stream;
+const ChatModel = wl.collections.chat;
 
 router.get('/browse', function(req, res, next) {
 	StreamModel.findNonClosedStreams().then(function(streams){
@@ -126,6 +127,20 @@ router.post('/:id/close',
 				
 				res.sendStatus(200);
 			});
+		}).catch(function(err){
+			next(err);
+		});
+	}
+);
+
+router.post('/:id/chat/message',
+	passport.passportAuthTokenStrict,
+ 	
+ 	function(req, res, next) {
+ 		var streamId = +req.params.id;
+
+		ChatModel.createMessage(streamId, req.user, req.body.message).then(function(message){
+			res.json(message);
 		}).catch(function(err){
 			next(err);
 		});

@@ -8,6 +8,7 @@ waterline.loadCollection(require('./models/user'));
 waterline.loadCollection(require('./models/social'));
 waterline.loadCollection(require('./models/stream'));
 waterline.loadCollection(require('./models/token'));
+waterline.loadCollection(require('./models/chat'));
 
 // Set up the storage configuration for waterline.
 var config = {

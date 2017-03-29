@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 class Messenger {
     constructor(){
         this.scServer = null
@@ -11,26 +13,29 @@ class Messenger {
         this.scServer.exchange.publish(event, data);
     }
 
-    streamUpdate(id, stream){
-        this._send("stream." + id, stream);
+    streamUpdate(streamId, stream){
+        this._send("stream." + streamId, stream);
     }
 
-    streamChatAddMessage(id, user, message){
+    streamChatAddMessage(streamId, user, message){
         let data = {
             event: 'add',
             data: {
-                user, message
+                id: message.id,
+                message: message.message,
+                createdAt: message.createdAt,
+                user: _.pick(user, ['id', 'name', 'moderator'])
             }
         };
-        this._send("stream." + id + ".chat", data);
+        this._send("stream." + streamId + ".chat", data);
     }
 
-    streamChatAddMessage(id, messageId){
+    streamChatRemoveMessage(streamId, messageId){
         let data = {
             event: 'remove',
             data: messageId
         };
-        this._send("stream." + id + ".chat", data);
+        this._send("stream." + streamId + ".chat", data);
     }
 }
 
